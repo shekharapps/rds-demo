@@ -8,6 +8,7 @@ variable "environment" {
 variable "common_name_prefix" {
   description = "The prefix used to name all resources created."
   type        = string
+  default     = "ST"
 }
 
 variable "number" {
@@ -26,14 +27,17 @@ variable "tags" {
 variable "subnet-db-a-id" {
   description = "The ID of the first subnet for the DocumentDB cluster"
   type        = string
+  default     = "mock-subnet-b-id"
 }
 
 variable "subnet-db-b-id" {
   description = "The ID of the second subnet for the DocumentDB cluster"
   type        = string
+  default     = "mock-subnet-a-id"
 }
 
 variable "db-sg-id" {
   description = "The ID of the DocumentDB cluster"
   type        = string
+  default     = "mock-sg-id"
 }
