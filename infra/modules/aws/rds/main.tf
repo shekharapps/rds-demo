@@ -23,6 +23,27 @@ resource "random_password" "password_postgres" {
   special = false
 }
 
+resource "aws_kms_key" "rds_performance_insights" {
+  description             = "KMS key for RDS Performance Insights encryption"
+  deletion_window_in_days = 10
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "rds.amazonaws.com"
+      },
+      "Action": "kms:*",
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+
 resource "aws_db_instance" "db" {
   identifier              = "${local.extract_resource_name}-db"
   instance_class          = "db.t3.micro"
@@ -43,6 +64,7 @@ resource "aws_db_instance" "db" {
   performance_insights_enabled = var.environment == "prod" || var.environment == "production" ? true : false
   deletion_protection     = var.environment == "prod" || var.environment == "production" ? true : false
   multi_az = true
+  performance_insights_kms_key_id = aws_kms_key.rds_performance_insights.arn
   publicly_accessible    = false
   skip_final_snapshot = var.environment == "prod" || var.environment == "production" ? false : true
 
